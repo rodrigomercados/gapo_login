@@ -261,3 +261,5 @@ def delete_tipo_usuario(cod_tipo_usuario: int, db: Session = Depends(get_db), cu
     db.delete(db_tipo_usuario)
     db.commit()
     return db_tipo_usuario
+
+    

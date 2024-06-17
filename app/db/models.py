@@ -38,3 +38,26 @@ class Usuario(Base):
     
     def verify_password(self, plain_password):
         return pwd_context.verify(plain_password, self.contrasena)
+
+
+class Tipo_Usuario(Base):
+    __tablename__ = 'tipo_usuario'
+    cod_tipo_usuario = Column(BigInteger, primary_key=True)
+    desc_tipo_usuario = Column(String(255), nullable=False)
+    insertby = Column(String(100), nullable=False, default=func.current_user())
+    inserttime = Column(TIMESTAMP, nullable=False, default=func.now())
+
+
+class Cliente(Base):
+    __tablename__ = 'cliente'
+    cod_cliente = Column(BigInteger, primary_key=True, autoincrement=True)
+    rut_cliente = Column(String(12))
+    razon_social = Column(String(255))
+    telefono1 = Column(String(12))
+    telefono2 = Column(String(12))
+    email = Column(String(100))
+    desc_cliente = Column(String(255), nullable=False)
+    direccion = Column(String(255))
+    cod_comuna = Column(BigInteger, nullable=True)
+    insertby = Column(String(100), nullable=False, default=func.current_user())
+    inserttime = Column(Date, nullable=False, default=func.now())
