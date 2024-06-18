@@ -40,12 +40,12 @@ class Usuario(Base):
         return pwd_context.verify(plain_password, self.contrasena)
 
 
-class Tipo_Usuario(Base):
-    __tablename__ = 'tipo_usuario'
-    cod_tipo_usuario = Column(BigInteger, primary_key=True)
-    desc_tipo_usuario = Column(String(255), nullable=False)
-    insertby = Column(String(100), nullable=False, default=func.current_user())
-    inserttime = Column(TIMESTAMP, nullable=False, default=func.now())
+# class Tipo_Usuario(Base):
+#     __tablename__ = 'tipo_usuario'
+#     cod_tipo_usuario = Column(BigInteger, primary_key=True)
+#     desc_tipo_usuario = Column(String(255), nullable=False)
+#     insertby = Column(String(100), nullable=False, default=func.current_user())
+#     inserttime = Column(TIMESTAMP, nullable=False, default=func.now())
 
 
 class Cliente(Base):

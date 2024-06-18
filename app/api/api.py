@@ -15,14 +15,6 @@ from ..core.security import ALGORITHM
 from jose import jwt, JWTError
 
 
-
-
-
-
-
-
-
-
 router = APIRouter()
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
