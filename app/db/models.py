@@ -34,6 +34,7 @@ class Usuario(Base):
     cod_tipo_usuario = Column(BigInteger, ForeignKey('tipo_usuario.cod_tipo_usuario'), nullable=False)
     cod_superior = Column(BigInteger,ForeignKey('usuario.cod_usuario'), nullable=True)
 
+    informes = relationship('UsuarioInforme', back_populates='usuario')
     tipo_usuario = relationship("Tipo_Usuario")
     
     def verify_password(self, plain_password):
@@ -61,3 +62,22 @@ class Cliente(Base):
     cod_comuna = Column(BigInteger, nullable=True)
     insertby = Column(String(100), nullable=False, default=func.current_user())
     inserttime = Column(Date, nullable=False, default=func.now())
+
+class Informe(Base):
+    __tablename__ = 'informe'
+    cod_informe = Column(BigInteger, primary_key=True, index=True)
+    desc_informe = Column(String, nullable=False)
+    url = Column(String)
+    insertby = Column(String, nullable=False, default="CURRENT_USER")
+    inserttime = Column(Date, nullable=False, default="now()")
+
+class UsuarioInforme(Base):
+    __tablename__ = 'usuario_informe'
+    cod_usuario_informe = Column(BigInteger, primary_key=True, index=True)
+    desc_usuario_informe = Column(String, nullable=False)
+    cod_usuario = Column(BigInteger, ForeignKey('usuario.cod_usuario'))
+    cod_informe = Column(BigInteger, ForeignKey('informe.cod_informe'))
+    insertby = Column(String, nullable=False, default="CURRENT_USER")
+    inserttime = Column(Date, nullable=False, default="now()")
+    usuario = relationship('Usuario', back_populates='informes')
+    informe = relationship('Informe')

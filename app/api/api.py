@@ -3,7 +3,7 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from app.api.dependencies import get_db
 from app.db.models import Usuario, Tipo_Usuario  # Modelos de SQLAlchemy
-from app.db.models import Tipo_Usuario
+from app.db.models import Tipo_Usuario,Usuario,UsuarioInforme,Informe
 from app.core.security import create_access_token
 from app.schemas.token import Token, TokenData
 from app.schemas.usuario import UsuarioCreate, UsuarioUpdate, UsuarioResponse
@@ -60,12 +60,19 @@ def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db:
         raise HTTPException(status_code=401, detail="Usuario incorrecto")
     if not user.verify_password(form_data.password):
         raise HTTPException(status_code=401, detail="Password incorrecta")
+    
+    # Obtener la lista de URLs de informes relacionados
+    usuario_informes = db.query(UsuarioInforme).filter(UsuarioInforme.cod_usuario == user.cod_usuario).all()
+    urls = [db.query(Informe).filter(Informe.cod_informe == ui.cod_informe).first().url for ui in usuario_informes]
+
+
     access_token = create_access_token(data={"sub": user.username})
     return {
         "access_token": access_token,
         "token_type": "bearer",
         "desc_usuario": user.desc_usuario,
-        "cod_tipo_usuario": user.cod_tipo_usuario
+        "cod_tipo_usuario": user.cod_tipo_usuario,
+        "urls_usuario": urls
     }
 
 
@@ -75,8 +82,8 @@ def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db:
 
 @router.post("/usuarios/", response_model=UsuarioCreate, status_code=status.HTTP_201_CREATED, tags=["Usuarios"], operation_id="post_usuario")
 def create_usuario(user: UsuarioCreate, db: Session = Depends(get_db), user_token: str = Depends(get_current_user)):
-    if not user_token:
-        raise HTTPException(status_code=400, detail="Usuario Inactivo")
+    #if not user_token:
+    #    raise HTTPException(status_code=400, detail="Usuario Inactivo")
     db_user = db.query(Usuario).filter(Usuario.username == user.username).first()
     if db_user:
         raise HTTPException(status_code=400, detail="Username already registered")
