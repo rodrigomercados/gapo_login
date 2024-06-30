@@ -81,7 +81,7 @@ def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db:
 ############################################
 
 @router.post("/usuarios/", response_model=UsuarioCreate, status_code=status.HTTP_201_CREATED, tags=["Usuarios"], operation_id="post_usuario")
-def create_usuario(user: UsuarioCreate, db: Session = Depends(get_db), user_token: str = Depends(get_current_user)):
+def create_usuario(user: UsuarioCreate, db: Session = Depends(get_db)):#, user_token: str = Depends(get_current_user)):
     #if not user_token:
     #    raise HTTPException(status_code=400, detail="Usuario Inactivo")
     db_user = db.query(Usuario).filter(Usuario.username == user.username).first()
