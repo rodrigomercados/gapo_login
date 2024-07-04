@@ -65,14 +65,38 @@ def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db:
     usuario_informes = db.query(UsuarioInforme).filter(UsuarioInforme.cod_usuario == user.cod_usuario).all()
     #urls = [db.query(Informe).filter(Informe.cod_informe == ui.cod_informe).first().url for ui in usuario_informes]
 
-    urls = [
+    # Obtener la lista de URLs de informes relacionados con el usuario
+    usuario_informes = db.query(UsuarioInforme).filter(UsuarioInforme.cod_usuario == user.cod_usuario).all()
+    urls_usuario = [
         UrlInfo(
             cod_informe=ui.cod_informe,
             desc_informe=db.query(Informe).filter(Informe.cod_informe == ui.cod_informe).first().desc_informe,
+            cod_tipo_usuario=user.cod_tipo_usuario,
             url=db.query(Informe).filter(Informe.cod_informe == ui.cod_informe).first().url
         )
         for ui in usuario_informes
     ]
+
+    # Obtener la lista de informes de los usuarios que tienen como superior al usuario autenticado
+    subordinados = db.query(Usuario).filter(Usuario.cod_superior == user.cod_usuario).all()
+    urls_subordinados = []
+    for sub in subordinados:
+        sub_informes = db.query(UsuarioInforme).filter(UsuarioInforme.cod_usuario == sub.cod_usuario).all()
+        for si in sub_informes:
+            informe = db.query(Informe).filter(Informe.cod_informe == si.cod_informe).first()
+            if informe:
+                urls_subordinados.append(
+                    UrlInfo(
+                        cod_informe=informe.cod_informe,
+                        desc_informe=informe.desc_informe,
+                        cod_tipo_usuario=sub.cod_tipo_usuario,
+                        url=informe.url
+                    )
+                )
+
+    # Combinar ambas listas y eliminar duplicados
+    all_urls = { (url.cod_informe, url.desc_informe, url.url): url for url in (urls_usuario + urls_subordinados) }
+    combined_urls = list(all_urls.values())
 
     access_token = create_access_token(data={"sub": user.username})
     return {
@@ -80,7 +104,7 @@ def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db:
         "token_type": "bearer",
         "desc_usuario": user.desc_usuario,
         "cod_tipo_usuario": user.cod_tipo_usuario,
-        "urls_usuario": urls
+        "urls_usuario": combined_urls#urls
     }
 
 

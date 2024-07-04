@@ -7,6 +7,7 @@ from typing import List
 class UrlInfo(BaseModel):
     cod_informe: int
     desc_informe: str
+    cod_tipo_usuario: int
     url: str
 
 class Token(BaseModel):
