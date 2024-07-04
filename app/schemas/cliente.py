@@ -1,5 +1,6 @@
 from pydantic import BaseModel, EmailStr, Field
 from typing import Optional
+from datetime import date
 
 class ClienteBase(BaseModel):
     rut_cliente: Optional[str] = Field(max_length=12)
@@ -20,7 +21,7 @@ class ClienteUpdate(ClienteBase):
 class ClienteResponse(ClienteBase):
     cod_cliente: int
     insertby: str
-    inserttime: Date
+    inserttime: date
 
     class Config:
         from_attributes = True

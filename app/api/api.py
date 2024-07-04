@@ -2,12 +2,12 @@ from fastapi import APIRouter, Depends, HTTPException, status, Query
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from app.api.dependencies import get_db
-from app.db.models import Usuario, Tipo_Usuario  # Modelos de SQLAlchemy
-from app.db.models import Tipo_Usuario,Usuario,UsuarioInforme,Informe
+from app.db.models import Tipo_Usuario,Usuario,UsuarioInforme,Informe,AuditoriaAcceso
 from app.core.security import create_access_token
-from app.schemas.token import Token, TokenData
+from app.schemas.token import Token, TokenData,UrlInfo
 from app.schemas.usuario import UsuarioCreate, UsuarioUpdate, UsuarioResponse
 from app.schemas.tipo_usuario import Tipo_UsuarioCreate, Tipo_UsuarioUpdate, Tipo_UsuarioResponse
+from app.schemas.auditoria_acceso import Auditoria_AccesoCreate,Auditoria_AccesoResponse,Auditoria_AccesoUpdate
 from passlib.context import CryptContext
 from typing import List, Optional, Annotated, Dict
 from ..core.config import Settings
@@ -63,8 +63,16 @@ def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db:
     
     # Obtener la lista de URLs de informes relacionados
     usuario_informes = db.query(UsuarioInforme).filter(UsuarioInforme.cod_usuario == user.cod_usuario).all()
-    urls = [db.query(Informe).filter(Informe.cod_informe == ui.cod_informe).first().url for ui in usuario_informes]
+    #urls = [db.query(Informe).filter(Informe.cod_informe == ui.cod_informe).first().url for ui in usuario_informes]
 
+    urls = [
+        UrlInfo(
+            cod_informe=ui.cod_informe,
+            desc_informe=db.query(Informe).filter(Informe.cod_informe == ui.cod_informe).first().desc_informe,
+            url=db.query(Informe).filter(Informe.cod_informe == ui.cod_informe).first().url
+        )
+        for ui in usuario_informes
+    ]
 
     access_token = create_access_token(data={"sub": user.username})
     return {
@@ -261,4 +269,25 @@ def delete_tipo_usuario(cod_tipo_usuario: int, db: Session = Depends(get_db), cu
     db.commit()
     return db_tipo_usuario
 
+
+############################################
+###########    Post Auditoría   ############
+############################################
     
+@router.post("/auditoria_acceso/", response_model=Auditoria_AccesoResponse, status_code=status.HTTP_201_CREATED, tags=["Auditoría Acceso"], operation_id="post_auditoria_acceso")
+def create_auditoria_acceso(auditoria_acceso: Auditoria_AccesoCreate, db: Session = Depends(get_db), user_token: str = Depends(get_current_user)):
+    if not user_token:
+        raise HTTPException(status_code=400, detail="Usuario Inactivo")
+    #db_tipo_usuario = db.query(Tipo_Usuario).filter(Tipo_Usuario.desc_tipo_usuario == tipo_usuario.desc_tipo_usuario).first()
+    db_auditoria_acceso = db.query(AuditoriaAcceso).filter(AuditoriaAcceso.desc_auditoria_acceso == auditoria_acceso.desc_auditoria_acceso).first()
+    if db_auditoria_acceso:
+        raise HTTPException(status_code=400, detail="Auditoria ya registrada")
+    db_auditoria_acceso = AuditoriaAcceso(
+        desc_auditoria_acceso=auditoria_acceso.desc_auditoria_acceso,
+        cod_usuario = auditoria_acceso.cod_usuario,
+        cod_informe = auditoria_acceso.cod_informe
+    )
+    db.add(db_auditoria_acceso)
+    db.commit()
+    db.refresh(db_auditoria_acceso)
+    return db_auditoria_acceso
