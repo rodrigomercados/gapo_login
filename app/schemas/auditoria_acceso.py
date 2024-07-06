@@ -1,11 +1,11 @@
 # schemas
 
 from pydantic import BaseModel
-from datetime import date
+from datetime import date,datetime
 
 class Auditoria_AccesoResponse(BaseModel):
     desc_auditoria_acceso: str
-    fecha: date
+    fecha: datetime
     cod_usuario: int
     cod_informe: int
 
@@ -14,7 +14,7 @@ class Auditoria_AccesoResponse(BaseModel):
 
 class Auditoria_AccesoCreate(BaseModel):
     desc_auditoria_acceso: str
-    fecha: date
+    fecha: datetime
     cod_usuario: int
     cod_informe: int
 
@@ -24,7 +24,7 @@ class Auditoria_AccesoCreate(BaseModel):
 
 class Auditoria_AccesoUpdate(BaseModel):
     desc_auditoria_acceso: str
-    fecha: date
+    fecha: datetime
     cod_usuario: int
     cod_informe: int
 

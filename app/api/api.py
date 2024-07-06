@@ -308,6 +308,7 @@ def create_auditoria_acceso(auditoria_acceso: Auditoria_AccesoCreate, db: Sessio
         raise HTTPException(status_code=400, detail="Auditoria ya registrada")
     db_auditoria_acceso = AuditoriaAcceso(
         desc_auditoria_acceso=auditoria_acceso.desc_auditoria_acceso,
+        fecha=auditoria_acceso.fecha,
         cod_usuario = auditoria_acceso.cod_usuario,
         cod_informe = auditoria_acceso.cod_informe
     )
