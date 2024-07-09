@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session,joinedload
 from app.api.dependencies import get_db
 from app.db.models import Tipo_Usuario,Usuario,UsuarioInforme,Informe,AuditoriaAcceso
 from app.core.security import create_access_token
@@ -316,3 +316,34 @@ def create_auditoria_acceso(auditoria_acceso: Auditoria_AccesoCreate, db: Sessio
     db.commit()
     db.refresh(db_auditoria_acceso)
     return db_auditoria_acceso
+
+@router.get("/auditoria_acceso/", response_model=List[Auditoria_AccesoResponse], tags=["Auditoría Acceso"], operation_id="get_auditoria_acceso")
+def read_auditoria_acceso(db: Session = Depends(get_db), user_token: str = Depends(get_current_user)):
+    if not user_token:
+        raise HTTPException(status_code=400, detail="Usuario Inactivo")
+    auditoria_acceso = db.query(AuditoriaAcceso).options(
+        joinedload(AuditoriaAcceso.usuario),
+        joinedload(AuditoriaAcceso.informe)
+    ).filter(
+        AuditoriaAcceso.cod_usuario != None,
+        AuditoriaAcceso.cod_informe != None
+    ).all()
+    
+    if not auditoria_acceso:
+        raise HTTPException(status_code=404, detail="Auditoria Acceso no encontrada")
+    
+    response = []
+    for audit in auditoria_acceso:
+        response.append({
+            "cod_auditoria_acceso": audit.cod_auditoria_acceso,
+            "desc_auditoria_acceso": audit.desc_auditoria_acceso,
+            "fecha": audit.fecha,
+            "cod_usuario": audit.cod_usuario,
+            "nombres_usuario": audit.usuario.nombres_usuario if audit.usuario else None,
+            "apellido_paterno_usuario": audit.usuario.apellido_paterno_usuario if audit.usuario else None,
+            "apellido_materno_usuario": audit.usuario.apellido_materno_usuario if audit.usuario else None,
+            "cod_informe": audit.cod_informe,
+            "desc_informe": audit.informe.desc_informe if audit.informe else None
+        })
+    
+    return response
