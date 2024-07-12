@@ -298,7 +298,7 @@ def delete_tipo_usuario(cod_tipo_usuario: int, db: Session = Depends(get_db), cu
 ###########    Post Auditoría   ############
 ############################################
     
-@router.post("/auditoria_acceso/", response_model=Auditoria_AccesoResponse, status_code=status.HTTP_201_CREATED, tags=["Auditoría Acceso"], operation_id="post_auditoria_acceso")
+@router.post("/auditoria_acceso/", response_model=Auditoria_AccesoCreate, status_code=status.HTTP_201_CREATED, tags=["Auditoría Acceso"], operation_id="post_auditoria_acceso")
 def create_auditoria_acceso(auditoria_acceso: Auditoria_AccesoCreate, db: Session = Depends(get_db), user_token: str = Depends(get_current_user)):
     if not user_token:
         raise HTTPException(status_code=400, detail="Usuario Inactivo")
@@ -314,7 +314,7 @@ def create_auditoria_acceso(auditoria_acceso: Auditoria_AccesoCreate, db: Sessio
     )
     db.add(db_auditoria_acceso)
     db.commit()
-    db.refresh(db_auditoria_acceso)
+    #db.refresh(db_auditoria_acceso)
     return db_auditoria_acceso
 
 @router.get("/auditoria_acceso/", response_model=List[Auditoria_AccesoResponse], tags=["Auditoría Acceso"], operation_id="get_auditoria_acceso")
