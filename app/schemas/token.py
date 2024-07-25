@@ -13,6 +13,7 @@ class UrlInfo(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
+    cod_usuario: int
     desc_usuario: str
     cod_tipo_usuario: int
     urls_usuario: List[UrlInfo]
