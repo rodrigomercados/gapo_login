@@ -8,6 +8,7 @@ class Auditoria_AccesoResponse(BaseModel):
     desc_auditoria_acceso: str
     fecha: datetime
     cod_usuario: int
+    run_usuario: str
     nombres_usuario: str
     apellido_paterno_usuario: str
     apellido_materno_usuario: str
