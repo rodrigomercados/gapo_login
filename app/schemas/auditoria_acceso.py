@@ -22,6 +22,7 @@ class Auditoria_AccesoCreate(BaseModel):
     desc_auditoria_acceso: str
     fecha: datetime
     cod_usuario: int
+    run_usuario: str
     cod_informe: int
 
     class Config:
@@ -32,6 +33,7 @@ class Auditoria_AccesoUpdate(BaseModel):
     desc_auditoria_acceso: str
     fecha: datetime
     cod_usuario: int
+    run_usuario: str
     cod_informe: int
 
     class Config:
