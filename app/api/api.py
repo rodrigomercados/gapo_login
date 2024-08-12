@@ -341,7 +341,7 @@ def read_auditoria_acceso(db: Session = Depends(get_db), user_token: str = Depen
             "desc_auditoria_acceso": audit.desc_auditoria_acceso,
             "fecha": audit.fecha,
             "cod_usuario": audit.cod_usuario,
-            "run_usuario": audit.usuario.run_usuario if audit.usuario else None,
+            "run_usuario": audit.run_usuario ,
             "nombres_usuario": audit.usuario.nombres_usuario if audit.usuario else None,
             "apellido_paterno_usuario": audit.usuario.apellido_paterno_usuario if audit.usuario else None,
             "apellido_materno_usuario": audit.usuario.apellido_materno_usuario if audit.usuario else None,
