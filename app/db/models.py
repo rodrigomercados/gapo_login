@@ -83,7 +83,7 @@ class AuditoriaAcceso(Base):
     desc_auditoria_acceso = Column(String, nullable=False)
     fecha = Column(DateTime, nullable=False, default=func.now())
     cod_usuario = Column(BigInteger, ForeignKey('usuario.cod_usuario'))
-    run_usuario = Column(BigInteger)
+    #run_usuario = Column(BigInteger)
     cod_informe = Column(BigInteger, ForeignKey('informe.cod_informe'))
     insertby = Column(String, nullable=False, default="CURRENT_USER")
     inserttime = Column(DateTime, nullable=False, default=func.now())

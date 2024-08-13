@@ -311,7 +311,7 @@ def create_auditoria_acceso(auditoria_acceso: Auditoria_AccesoCreate, db: Sessio
         desc_auditoria_acceso=auditoria_acceso.desc_auditoria_acceso,
         fecha=auditoria_acceso.fecha,
         cod_usuario = auditoria_acceso.cod_usuario,
-        run_usuario = auditoria_acceso.run_usuario,
+        #run_usuario = auditoria_acceso.run_usuario,
         cod_informe = auditoria_acceso.cod_informe
     )
     db.add(db_auditoria_acceso)
@@ -341,7 +341,7 @@ def read_auditoria_acceso(db: Session = Depends(get_db), user_token: str = Depen
             "desc_auditoria_acceso": audit.desc_auditoria_acceso,
             "fecha": audit.fecha,
             "cod_usuario": audit.cod_usuario,
-            "run_usuario": audit.run_usuario ,
+            "run_usuario": audit.usuario.run_usuario if audit.usuario else None,
             "nombres_usuario": audit.usuario.nombres_usuario if audit.usuario else None,
             "apellido_paterno_usuario": audit.usuario.apellido_paterno_usuario if audit.usuario else None,
             "apellido_materno_usuario": audit.usuario.apellido_materno_usuario if audit.usuario else None,
