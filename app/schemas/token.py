@@ -16,6 +16,8 @@ class Token(BaseModel):
     cod_usuario: int
     desc_usuario: str
     cod_tipo_usuario: int
+    cod_plataforma: int
+    desc_plataforma: str
     urls_usuario: List[UrlInfo]
 
 class TokenData(BaseModel):
