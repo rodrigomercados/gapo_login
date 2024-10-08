@@ -14,6 +14,8 @@ class Auditoria_AccesoResponse(BaseModel):
     apellido_materno_usuario: str
     cod_informe: int
     desc_informe: str
+    cod_plataforma: int
+    desc_plataforma: str
 
     class Config:
         from_attributes = True
@@ -24,7 +26,9 @@ class Auditoria_AccesoCreate(BaseModel):
     cod_usuario: int
     #run_usuario: str
     cod_informe: int
-
+    cod_plataforma: int
+    desc_plataforma: str
+    
     class Config:
         from_attributes = True
 

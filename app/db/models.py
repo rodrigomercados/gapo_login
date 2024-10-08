@@ -62,10 +62,13 @@ class AuditoriaAcceso(Base):
     cod_usuario = Column(BigInteger, ForeignKey('usuario.cod_usuario'))
     #run_usuario = Column(BigInteger)
     cod_informe = Column(BigInteger, ForeignKey('informe.cod_informe'))
+    cod_plataforma = Column(BigInteger, nullable=False)
+    desc_plataforma = Column(String, nullable=False)
     insertby = Column(String, nullable=False, default="CURRENT_USER")
     inserttime = Column(DateTime, nullable=False, default=func.now())
     usuario = relationship('Usuario', back_populates='auditorias_acceso')
     informe = relationship('Informe', back_populates='auditorias_acceso')
+
 
 
 

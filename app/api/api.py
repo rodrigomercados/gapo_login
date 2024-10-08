@@ -338,7 +338,9 @@ def create_auditoria_acceso(auditoria_acceso: Auditoria_AccesoCreate, db: Sessio
         fecha=auditoria_acceso.fecha,
         cod_usuario = auditoria_acceso.cod_usuario,
         #run_usuario = auditoria_acceso.run_usuario,
-        cod_informe = auditoria_acceso.cod_informe
+        cod_informe = auditoria_acceso.cod_informe,
+        cod_plataforma = auditoria_acceso.cod_plataforma,
+        desc_plataforma = auditoria_acceso.desc_plataforma
     )
     db.add(db_auditoria_acceso)
     db.commit()
@@ -372,7 +374,9 @@ def read_auditoria_acceso(db: Session = Depends(get_db), user_token: str = Depen
             "apellido_paterno_usuario": audit.usuario.apellido_paterno_usuario if audit.usuario else None,
             "apellido_materno_usuario": audit.usuario.apellido_materno_usuario if audit.usuario else None,
             "cod_informe": audit.cod_informe,
-            "desc_informe": audit.informe.desc_informe if audit.informe else None
+            "desc_informe": audit.informe.desc_informe if audit.informe else None,
+            "cod_plataforma":audit.cod_plataforma if audit.cod_plataforma is not None else -1,
+            "desc_plataforma":audit.desc_plataforma if audit.desc_plataforma is not None else "Sin Información"
         })
     
     return response
