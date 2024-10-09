@@ -378,7 +378,6 @@ def read_auditoria_acceso(db: Session = Depends(get_db), user_token: str = Depen
             "cod_plataforma":audit.cod_plataforma if audit.cod_plataforma is not None else -1,
             "desc_plataforma":audit.desc_plataforma if audit.desc_plataforma is not None else "Sin Información"
         })
-    
     return response
 
 ############################################
